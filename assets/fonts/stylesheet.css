@@ -1,0 +1,48 @@
+@font-face {
+    font-family: 'Andika New Basic';
+    src: url('AndikaNewBasic-BoldItalic.eot');
+    src: local('Andika New Basic Bold Italic'), local('AndikaNewBasic-BoldItalic'),
+        url('AndikaNewBasic-BoldItalic.eot?#iefix') format('embedded-opentype'),
+        url('AndikaNewBasic-BoldItalic.woff2') format('woff2'),
+        url('AndikaNewBasic-BoldItalic.woff') format('woff'),
+        url('AndikaNewBasic-BoldItalic.ttf') format('truetype');
+    font-weight: bold;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'Andika New Basic';
+    src: url('AndikaNewBasic-Regular.eot');
+    src: local('Andika New Basic'), local('AndikaNewBasic-Regular'),
+        url('AndikaNewBasic-Regular.eot?#iefix') format('embedded-opentype'),
+        url('AndikaNewBasic-Regular.woff2') format('woff2'),
+        url('AndikaNewBasic-Regular.woff') format('woff'),
+        url('AndikaNewBasic-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Andika New Basic';
+    src: url('AndikaNewBasic-Bold.eot');
+    src: local('Andika New Basic Bold'), local('AndikaNewBasic-Bold'),
+        url('AndikaNewBasic-Bold.eot?#iefix') format('embedded-opentype'),
+        url('AndikaNewBasic-Bold.woff2') format('woff2'),
+        url('AndikaNewBasic-Bold.woff') format('woff'),
+        url('AndikaNewBasic-Bold.ttf') format('truetype');
+    font-weight: bold;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Andika New Basic';
+    src: url('AndikaNewBasic-Italic.eot');
+    src: local('Andika New Basic Italic'), local('AndikaNewBasic-Italic'),
+        url('AndikaNewBasic-Italic.eot?#iefix') format('embedded-opentype'),
+        url('AndikaNewBasic-Italic.woff2') format('woff2'),
+        url('AndikaNewBasic-Italic.woff') format('woff'),
+        url('AndikaNewBasic-Italic.ttf') format('truetype');
+    font-weight: normal;
+    font-style: italic;
+}
+
