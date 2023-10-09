@@ -6,13 +6,13 @@ import { NavigationContainer } from '@react-navigation/native';
 import RootNavigation from './config/routes/navigation';
 export default function App() {
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <NavigationContainer>
         <RootNavigation />
       </NavigationContainer>
       <StatusBar style="auto" />
       <Toast />
-    </SafeAreaView>
+    </View>
   );
 }
 

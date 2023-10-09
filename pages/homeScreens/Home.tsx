@@ -1,11 +1,17 @@
-import { View, Text, StyleSheet } from 'react-native'
-import React from 'react'
+import { View, Text, StyleSheet, SafeAreaView } from 'react-native';
 
-export  function Home() {
+import { useCountryStore } from '../countryDetails/state/setCountryState';
+
+import { Header, NewsCategories } from '../../modules/home';
+
+export function Home() {
   return (
-    <View style={container}>
-      <Text>Home</Text>
-    </View>
+    <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
+      <View style={container}>
+        <Header />
+        <NewsCategories />
+      </View>
+    </SafeAreaView>
   );
 }
 
@@ -13,7 +19,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'white',
-    padding: 10,
+    paddingHorizontal: 10,
   },
 });
 

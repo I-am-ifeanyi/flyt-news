@@ -8,10 +8,10 @@ import {
   ScrollView,
   TouchableOpacity,
   ActivityIndicator,
+  SafeAreaView,
 } from 'react-native';
 import { useState } from 'react';
-import { initializeApp } from 'firebase/app';
-
+import { userStore } from '../countryDetails/state/setUserData';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { FIREBASE_AUTH } from '../../firebaseConfig';
 import { useForm } from 'react-hook-form';
@@ -30,14 +30,15 @@ import { PASSWORD_PATTERN, EMAIL_PATTERN, PHONE_PATTERN } from './SignIn';
 type IdentityInputs = {
   userName: string;
   email: string;
-  phone_number: number;
+  phone: number;
   password: string;
-  userRole: string;
 };
 
 export const SignUp = ({ navigation }: SignInProps) => {
   const auth = FIREBASE_AUTH;
   const toast = useToast();
+  const { updateUserData, clearUserData, updateUserStatus, userInfo, userStatus } =
+    userStore();
   const {
     control,
     watch,
@@ -66,12 +67,20 @@ export const SignUp = ({ navigation }: SignInProps) => {
       .then(userCredential => {
         toast.success({
           title: `Hi ${data?.userName}`,
-          message: 'You have successfully logged in',
+          message: 'You have successfully created an account',
         });
       })
       .catch(error => {
         alert(error.message);
       });
+    updateUserData(data);
+    updateUserStatus({
+      userStatus: mediaReporter ? 'Media Reporter' : 'Visitor',
+    });
+    setTimeout(() => {
+      // @ts-expect-error
+      navigation.navigate('CountriesScreen');
+    }, 3000);
   };
 
   const onTextChange = (text: string) => {
@@ -95,160 +104,173 @@ export const SignUp = ({ navigation }: SignInProps) => {
     navigation.navigate('SignIn');
     reset();
   };
-  return (
-    <View style={container}>
-      <Logo />
-      <ScrollView showsVerticalScrollIndicator={false}>
-        <Text style={signUpPrompt}>Please create your account</Text>
-        <View style={formInput}>
-          <KeyboardAvoidingView
-            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-            style={{ width: '100%', padding: 10, gap: 20 }}>
-            <TextInput
-              textInputField={'userName'}
-              defaultValue={false}
-              placeholder={'Username'}
-              onSubmitEditing={data => console.log(data)}
-              keyboardType={'default'}
-              selectTextOnFocus={true}
-              placeholderTextColor={'#777776'}
-              editable={true}
-              handleChange={data => onTextChange(data)}
-              control={control}
-              isPassword={false}
-              errorMessage={errors?.userName?.message}
-              rules={{
-                required: 'Username is required',
-                maxLength: { value: 50, message: 'Maximum of 50 characters' },
-              }}
-            />
-            <TextInput
-              textInputField={'email'}
-              defaultValue={false}
-              placeholder={'Email'}
-              onSubmitEditing={data => console.log(data)}
-              keyboardType={'email-address'}
-              selectTextOnFocus={true}
-              placeholderTextColor={'#777776'}
-              editable={true}
-              handleChange={data => onTextChange(data)}
-              control={control}
-              errorMessage={errors?.email?.message}
-              isPassword={false}
-              rules={{
-                required: 'Email is required',
-                maxLength: { value: 100, message: 'Maximum of 100 characters' },
-                pattern: { value: EMAIL_PATTERN, message: 'Not a valid email' },
-              }}
-            />
-            <TextInput
-              textInputField={'phone_number'}
-              defaultValue={false}
-              placeholder={'+2348062432523'}
-              onSubmitEditing={data => console.log(data)}
-              keyboardType={'phone-pad'}
-              selectTextOnFocus={true}
-              placeholderTextColor={'#777776'}
-              editable={true}
-              handleChange={data => onTextChange(data)}
-              control={control}
-              errorMessage={errors?.phone_number?.message}
-              isPassword={false}
-              rules={{
-                required: 'Phone number is required',
-                maxLength: { value: 11, message: 'Maximum of 11 characters' },
-                pattern: {
-                  value: PHONE_PATTERN,
-                  message: 'Not a valid phone number',
-                },
-              }}
-            />
-            <TextInput
-              textInputField={'password'}
-              defaultValue={false}
-              placeholder={'Password'}
-              onSubmitEditing={data => console.log(data)}
-              keyboardType={'default'}
-              selectTextOnFocus={true}
-              placeholderTextColor={'#777776'}
-              editable={true}
-              handleChange={data => onTextChange(data)}
-              control={control}
-              errorMessage={errors?.password?.message}
-              isPassword={true}
-              rules={{
-                required: 'Password is required',
-                maxLength: { value: 20, message: 'Maximum of 20 characters' },
-                pattern: {
-                  value: PASSWORD_PATTERN,
-                  message:
-                    'Password must be at least 8 characters long, has an uppercase letter, lowercase letter and a special character',
-                },
-              }}
-            />
-            <Pressable onPress={navigateToSignIn}>
-              <Text style={signIn}>Already have an account?</Text>
-            </Pressable>
 
-            <View style={userSelectSection}>
-              <Text style={whoStyle}>I am a</Text>
-              <View style={userSelectMainContainer}>
-                <View style={userSelectContainer}>
-                  <TouchableOpacity
-                    onPress={selectMediaReporter}
-                    style={
-                      mediaReporter ? userSelectStyle : userNotSelectStyle
-                    }>
-                    {mediaReporter && (
-                      <Feather name="check" size={18} color="red" />
-                    )}
-                  </TouchableOpacity>
-                  <Text style={{ fontWeight: '800' }}>Media Reporter</Text>
-                </View>
-                <View style={userSelectContainer}>
-                  <TouchableOpacity
-                    onPress={selectVisitor}
-                    style={visitor ? userSelectStyle : userNotSelectStyle}>
-                    {visitor && <Feather name="check" size={18} color="red" />}
-                  </TouchableOpacity>
-                  <Text style={{ fontWeight: '800' }}>Visitor</Text>
+  console.log(userInfo, userStatus);
+  return (
+    <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
+      <View style={container}>
+        <Logo />
+        <ScrollView showsVerticalScrollIndicator={false}>
+          <Text style={signUpPrompt}>Please create your account</Text>
+          <View style={formInput}>
+            <KeyboardAvoidingView
+              behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+              style={{ width: '100%', padding: 10, gap: 20 }}>
+              <TextInput
+                textInputField={'userName'}
+                placeholder={'Username'}
+                onSubmitEditing={data => console.log(data)}
+                keyboardType={'default'}
+                selectTextOnFocus={true}
+                placeholderTextColor={'#777776'}
+                editable={true}
+                handleChange={data => onTextChange(data)}
+                control={control}
+                isPassword={false}
+                errorMessage={errors?.userName?.message}
+                rules={{
+                  required: 'Username is required',
+                  maxLength: { value: 50, message: 'Maximum of 50 characters' },
+                }}
+              />
+              <TextInput
+                textInputField={'email'}
+                placeholder={'Email'}
+                onSubmitEditing={data => console.log(data)}
+                keyboardType={'email-address'}
+                selectTextOnFocus={true}
+                placeholderTextColor={'#777776'}
+                editable={true}
+                handleChange={data => onTextChange(data)}
+                control={control}
+                errorMessage={errors?.email?.message}
+                isPassword={false}
+                rules={{
+                  required: 'Email is required',
+                  maxLength: {
+                    value: 100,
+                    message: 'Maximum of 100 characters',
+                  },
+                  pattern: {
+                    value: EMAIL_PATTERN,
+                    message: 'Not a valid email',
+                  },
+                }}
+              />
+              <TextInput
+                textInputField={'phone'}
+                placeholder={'+2348062432523'}
+                onSubmitEditing={data => console.log(data)}
+                keyboardType={'phone-pad'}
+                selectTextOnFocus={true}
+                placeholderTextColor={'#777776'}
+                editable={true}
+                handleChange={data => onTextChange(data)}
+                control={control}
+                errorMessage={errors?.phone?.message}
+                isPassword={false}
+                rules={{
+                  required: 'Phone number is required',
+                  maxLength: { value: 11, message: 'Maximum of 11 characters' },
+                  pattern: {
+                    value: PHONE_PATTERN,
+                    message: 'Not a valid phone number',
+                  },
+                }}
+              />
+              <TextInput
+                textInputField={'password'}
+                placeholder={'Password'}
+                onSubmitEditing={data => console.log(data)}
+                keyboardType={'default'}
+                selectTextOnFocus={true}
+                placeholderTextColor={'#777776'}
+                editable={true}
+                handleChange={data => onTextChange(data)}
+                control={control}
+                errorMessage={errors?.password?.message}
+                isPassword={true}
+                rules={{
+                  required: 'Password is required',
+                  maxLength: { value: 20, message: 'Maximum of 20 characters' },
+                  pattern: {
+                    value: PASSWORD_PATTERN,
+                    message:
+                      'Password must be at least 8 characters long, has an uppercase letter, lowercase letter and a special character',
+                  },
+                }}
+              />
+              <Pressable onPress={navigateToSignIn}>
+                <Text style={signIn}>Already have an account?</Text>
+              </Pressable>
+
+              <View style={userSelectSection}>
+                <Text style={whoStyle}>I am a</Text>
+                <View style={userSelectMainContainer}>
+                  <View style={userSelectContainer}>
+                    <TouchableOpacity
+                      onPress={selectMediaReporter}
+                      style={
+                        mediaReporter ? userSelectStyle : userNotSelectStyle
+                      }>
+                      {mediaReporter && (
+                        <Feather name="check" size={18} color="red" />
+                      )}
+                    </TouchableOpacity>
+                    <Text style={{ fontWeight: '800' }}>Media Reporter</Text>
+                  </View>
+                  <View style={userSelectContainer}>
+                    <TouchableOpacity
+                      onPress={selectVisitor}
+                      style={visitor ? userSelectStyle : userNotSelectStyle}>
+                      {visitor && (
+                        <Feather name="check" size={18} color="red" />
+                      )}
+                    </TouchableOpacity>
+                    <Text style={{ fontWeight: '800' }}>Visitor</Text>
+                  </View>
                 </View>
               </View>
-            </View>
-            <Pressable
-              style={signInButtonContainer}
-              onPress={handleSubmit(onSubmit)}>
-              {isSubmitting ? (
-                <ActivityIndicator size="large" color="white" />
-              ) : (
-                <Text style={signInButton}>Sign In</Text>
-              )}
-            </Pressable>
-          </KeyboardAvoidingView>
-          <View>
-            <View style={sideBarContainer}>
-              <View style={sideBar}></View>
-              <Text style={signInPrompt}>Or sign in with </Text>
-              <View style={sideBar}></View>
-            </View>
-            <View style={signInIconsContainer}>
-              <FontAwesome name="google" size={40} color="black" />
-              <AntDesign name="facebook-square" size={40} color="black" />
-            </View>
-            <View style={termsAndConditionsContainer}>
-              <Text style={registerOption}>
-                By signing up to <Text style={appName}>Flyt News</Text>, you are
-                accepting our
-              </Text>
-              <TouchableOpacity
-                onPress={() => alert('Terms and Conditions not available yet')}>
-                <Text style={termsAndConditions}> terms & conditions</Text>
-              </TouchableOpacity>
+              <Pressable
+                style={signInButtonContainer}
+                onPress={handleSubmit(onSubmit)}>
+                {isSubmitting ? (
+                  <ActivityIndicator size="large" color="white" />
+                ) : (
+                  <Text style={signInButton}>Sign In</Text>
+                )}
+              </Pressable>
+            </KeyboardAvoidingView>
+            <View>
+              <View style={sideBarContainer}>
+                <View style={sideBar}></View>
+                <Text style={signInPrompt}>Or sign in with </Text>
+                <View style={sideBar}></View>
+              </View>
+              <View style={signInIconsContainer}>
+                <FontAwesome name="google" size={40} color="black" />
+                <AntDesign name="facebook-square" size={40} color="black" />
+                <Pressable onPress={clearUserData}>
+                  <Text>Clear Form</Text>
+                </Pressable>
+              </View>
+              <View style={termsAndConditionsContainer}>
+                <Text style={registerOption}>
+                  By signing up to <Text style={appName}>Flyt News</Text>, you
+                  are accepting our
+                </Text>
+                <TouchableOpacity
+                  onPress={() =>
+                    alert('Terms and Conditions not available yet')
+                  }>
+                  <Text style={termsAndConditions}> terms & conditions</Text>
+                </TouchableOpacity>
+              </View>
             </View>
           </View>
-        </View>
-      </ScrollView>
-    </View>
+        </ScrollView>
+      </View>
+    </SafeAreaView>
   );
 };
 
@@ -256,7 +278,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'white',
-    padding: 10,
+    paddingHorizontal: 10,
   },
   formInput: {
     flex: 1,

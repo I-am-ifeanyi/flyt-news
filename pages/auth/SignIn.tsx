@@ -7,6 +7,7 @@ import {
   Pressable,
   TouchableOpacity,
   ScrollView,
+  SafeAreaView,
 } from 'react-native';
 
 import { useNavigation } from '@react-navigation/native';
@@ -49,13 +50,13 @@ export const SignIn = ({ navigation }: SignUpProps) => {
           message: 'You have successfully logged in',
         });
         setTimeout(() => {
+          // @ts-expect-error
           navigation.navigate('homeNavigation', { Screen: 'Home' });
         }, 2000);
       })
       .catch(error => {
         alert(error.message);
       });
-    
   };
 
   const onTextChange = (text: string) => {
@@ -67,56 +68,18 @@ export const SignIn = ({ navigation }: SignUpProps) => {
     reset();
   };
   return (
-    <View style={container}>
-      <Logo />
-      <ScrollView showsVerticalScrollIndicator={false}>
-        <Text style={loginPrompt}>Please login to continue</Text>
-        <View style={formInput}>
-          <KeyboardAvoidingView
-            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-            style={{ width: '100%', padding: 10, gap: 20 }}>
-            <TextInput
-              textInputField={'userName'}
-              defaultValue={false}
-              placeholder={'Username'}
-              onSubmitEditing={data => console.log(data)}
-              keyboardType={'default'}
-              selectTextOnFocus={true}
-              placeholderTextColor={'#777776'}
-              editable={true}
-              handleChange={data => onTextChange(data)}
-              control={control}
-              isPassword={false}
-              errorMessage={errors?.userName?.message}
-              rules={{
-                required: 'Username is required',
-                maxLength: { value: 50, message: 'Maximum of 50 characters' },
-              }}
-            />
-            <TextInput
-              textInputField={'email'}
-              defaultValue={false}
-              placeholder={'Email'}
-              onSubmitEditing={data => console.log(data)}
-              keyboardType={'email-address'}
-              selectTextOnFocus={true}
-              placeholderTextColor={'#777776'}
-              editable={true}
-              handleChange={data => onTextChange(data)}
-              control={control}
-              errorMessage={errors?.email?.message}
-              isPassword={false}
-              rules={{
-                required: 'Email is required',
-                maxLength: { value: 100, message: 'Maximum of 100 characters' },
-                pattern: { value: EMAIL_PATTERN, message: 'Not a valid email' },
-              }}
-            />
-            <View>
+    <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
+      <View style={container}>
+        <Logo />
+        <ScrollView showsVerticalScrollIndicator={false}>
+          <Text style={loginPrompt}>Please login to continue</Text>
+          <View style={formInput}>
+            <KeyboardAvoidingView
+              behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+              style={{ width: '100%', padding: 10, gap: 20 }}>
               <TextInput
-                textInputField={'password'}
-                defaultValue={false}
-                placeholder={'Password'}
+                textInputField={'userName'}
+                placeholder={'Username'}
                 onSubmitEditing={data => console.log(data)}
                 keyboardType={'default'}
                 selectTextOnFocus={true}
@@ -124,45 +87,92 @@ export const SignIn = ({ navigation }: SignUpProps) => {
                 editable={true}
                 handleChange={data => onTextChange(data)}
                 control={control}
-                errorMessage={errors?.password?.message}
-                isPassword={true}
+                isPassword={false}
+                errorMessage={errors?.userName?.message}
                 rules={{
-                  required: 'Password is required',
-                  maxLength: { value: 20, message: 'Maximum of 20 characters' },
+                  required: 'Username is required',
+                  maxLength: { value: 50, message: 'Maximum of 50 characters' },
+                }}
+              />
+              <TextInput
+                textInputField={'email'}
+                placeholder={'Email'}
+                onSubmitEditing={data => console.log(data)}
+                keyboardType={'email-address'}
+                selectTextOnFocus={true}
+                placeholderTextColor={'#777776'}
+                editable={true}
+                handleChange={data => onTextChange(data)}
+                control={control}
+                errorMessage={errors?.email?.message}
+                isPassword={false}
+                rules={{
+                  required: 'Email is required',
+                  maxLength: {
+                    value: 100,
+                    message: 'Maximum of 100 characters',
+                  },
                   pattern: {
-                    value: PASSWORD_PATTERN,
-                    message:
-                      'Password must be at least 8 characters long, has an uppercase letter, lowercase letter and a special character',
+                    value: EMAIL_PATTERN,
+                    message: 'Not a valid email',
                   },
                 }}
               />
-              <Text style={forgotPasswordStyle}>Forgot Password</Text>
+              <View>
+                <TextInput
+                  textInputField={'password'}
+                  placeholder={'Password'}
+                  onSubmitEditing={data => console.log(data)}
+                  keyboardType={'default'}
+                  selectTextOnFocus={true}
+                  placeholderTextColor={'#777776'}
+                  editable={true}
+                  handleChange={data => onTextChange(data)}
+                  control={control}
+                  errorMessage={errors?.password?.message}
+                  isPassword={true}
+                  rules={{
+                    required: 'Password is required',
+                    maxLength: {
+                      value: 20,
+                      message: 'Maximum of 20 characters',
+                    },
+                    pattern: {
+                      value: PASSWORD_PATTERN,
+                      message:
+                        'Password must be at least 8 characters long, has an uppercase letter, lowercase letter and a special character',
+                    },
+                  }}
+                />
+                <Text style={forgotPasswordStyle}>Forgot Password</Text>
+              </View>
+              <Pressable
+                style={signInButtonContainer}
+                onPress={handleSubmit(onSubmit)}>
+                <Text style={signInButton}>Sign In</Text>
+              </Pressable>
+            </KeyboardAvoidingView>
+            <View>
+              <View style={sideBarContainer}>
+                <View style={sideBar}></View>
+                <Text style={signInPrompt}>Or sign in with </Text>
+                <View style={sideBar}></View>
+              </View>
+              <View style={signInIconsContainer}>
+                <FontAwesome name="google" size={40} color="black" />
+                <AntDesign name="facebook-square" size={40} color="black" />
+              </View>
+              <View style={registerOption}>
+                <Text> Don't have an account?</Text>
+                <TouchableOpacity onPress={navigateToSignUpScreen}>
+                  <Text style={register}>Register</Text>
+                </TouchableOpacity>
+              </View>
             </View>
-            <Pressable
-              style={signInButtonContainer}
-              onPress={handleSubmit(onSubmit)}>
-              <Text style={signInButton}>Sign In</Text>
-            </Pressable>
-          </KeyboardAvoidingView>
-          <View>
-            <View style={sideBarContainer}>
-              <View style={sideBar}></View>
-              <Text style={signInPrompt}>Or sign in with </Text>
-              <View style={sideBar}></View>
-            </View>
-            <View style={signInIconsContainer}>
-              <FontAwesome name="google" size={40} color="black" />
-              <AntDesign name="facebook-square" size={40} color="black" />
-            </View>
-            <TouchableOpacity onPress={navigateToSignUpScreen}>
-              <Text style={registerOption}>
-                Don't have an account? <Text style={register}>Register</Text>
-              </Text>
-            </TouchableOpacity>
           </View>
-        </View>
-      </ScrollView>
-    </View>
+        </ScrollView>
+      </View>
+    </SafeAreaView>
   );
 };
 
@@ -170,7 +180,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'white',
-    padding: 10,
+    paddingHorizontal: 10,
   },
   formInput: {
     flex: 1,
@@ -220,7 +230,11 @@ const styles = StyleSheet.create({
     marginVertical: 50,
   },
   registerOption: {
-    textAlign: 'center',
+    width: '100%',
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    gap: 5
   },
   register: {
     fontWeight: 'bold',

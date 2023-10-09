@@ -6,13 +6,15 @@ import {
   TextInput as RxTextInput,
   KeyboardTypeOptions,
   Pressable,
+  TextStyle
 } from 'react-native';
 import { Controller, Control } from 'react-hook-form';
 import { Ionicons } from '@expo/vector-icons';
+import { Feather } from '@expo/vector-icons';
 
 type props = {
-  defaultValue: string | boolean;
-  placeholder: string;
+  defaultValue?: string;
+  placeholder?: string;
   onSubmitEditing: (data: any) => void;
   keyboardType: KeyboardTypeOptions;
   editable: boolean;
@@ -20,10 +22,14 @@ type props = {
   placeholderTextColor: string;
   handleChange?: (data: any) => void;
   control: Control<any>;
-  rules: any;
+  rules?: any;
   textInputField: string;
-  errorMessage: string | undefined;
-  isPassword: boolean;
+  errorMessage?: string | undefined;
+  isPassword?: boolean;
+  isSearchIcon?: boolean;
+  value?: string;
+  searchHandleOnclick?: (data: string) => void;
+  style?: TextStyle
 };
 
 export const TextInput = ({
@@ -40,6 +46,10 @@ export const TextInput = ({
   textInputField,
   errorMessage,
   isPassword,
+  isSearchIcon,
+  value,
+  searchHandleOnclick,
+  style
 }: props) => {
   const [borderBottomColor, setBorderBottomColor] = useState('gray');
   const [borderColor, setBorderColor] = useState('transparent');
@@ -63,20 +73,23 @@ export const TextInput = ({
         control={control}
         defaultValue={defaultValue}
         rules={rules}
-        render={({ field: { onChange, onBlur, value } }) => (
+        render={({ field: { onChange, onBlur } }) => (
           <View>
             <View
               style={{
                 ...styles(editable).input,
                 borderBottomColor,
                 borderColor,
+                ...style
               }}>
               <RxTextInput
+                defaultValue={defaultValue}
                 placeholder={placeholder}
                 onChangeText={data => {
                   onChange(data);
                   handleChange?.(data);
                 }}
+                style={{ width: '90%', height: '100%' }}
                 onSubmitEditing={onSubmitEditing}
                 onFocus={handleFocus}
                 onBlur={handleBlur}
@@ -88,6 +101,7 @@ export const TextInput = ({
                 selectTextOnFocus={selectTextOnFocus}
                 placeholderTextColor={placeholderTextColor}
                 underlineColorAndroid="transparent"
+                value={value}
               />
               {isPassword && (
                 <Pressable onPress={togglePasswordVisibility}>
@@ -96,6 +110,11 @@ export const TextInput = ({
                   ) : (
                     <Ionicons name="eye-outline" size={20} color="black" />
                   )}
+                </Pressable>
+              )}
+              {isSearchIcon && (
+                <Pressable onPress={searchHandleOnclick}>
+                  <Feather name="search" size={20} color="black" />
                 </Pressable>
               )}
             </View>
