@@ -1,7 +1,10 @@
-import { View, Text } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, Pressable } from 'react-native';
 import React, { useState } from 'react';
 
+import { categoryState } from '../../pages/homeScreens/state/categoryState';
+
 export function NewsCategories() {
+  const { updateCategory, category } = categoryState();
   const [categories, setCategories] = useState([
     { category: 'All News', isActive: true },
     { category: 'Top Headlines', isActive: false },
@@ -31,11 +34,70 @@ export function NewsCategories() {
   ]);
 
 
- 
-
+  const toggleCategory = (id: number) => {
+    setCategories(prev => {
+      return prev.map((item, index) => {
+        if (index === id) {
+          updateCategory(item.category);
+          return { ...item, isActive: true };
+        } else {
+          return { ...item, isActive: false };
+        }
+      });
+    });
+  };
   return (
     <View>
-      <Text>NewsCategories</Text>
+      <ScrollView
+        style={scrollContainer}
+        horizontal={true}
+        showsVerticalScrollIndicator={false}>
+        {categories.map((item, index) => {
+          const style = item.isActive ? categoryStyleActive : categoryStyle;
+          const categoryViewStyle = item.isActive ? categoryContainer : null;
+
+          return (
+            <View key={index} style={{ marginRight: 20 }}>
+              <Pressable
+                style={categoryViewStyle}
+                onPress={() => toggleCategory(index)}>
+                <Text style={style}>{item.category}</Text>
+              </Pressable>
+            </View>
+          );
+        })}
+      </ScrollView>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  scrollContainer: {
+    marginVertical: 20,
+  },
+  categoryContainer: {
+    borderBottomWidth: 2,
+    alignContent: 'center',
+    alignItems: 'center',
+    borderColor: 'red',
+  },
+  categoryStyle: {
+    fontSize: 16,
+    color: 'gray',
+    textAlign: 'center',
+    paddingVertical: 5,
+  },
+  categoryStyleActive: {
+    fontSize: 16,
+    fontWeight: '700',
+    textAlign: 'center',
+    paddingVertical: 5,
+  },
+});
+
+const {
+  scrollContainer,
+  categoryStyle,
+  categoryStyleActive,
+  categoryContainer,
+} = styles;

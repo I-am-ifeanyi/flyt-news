@@ -8,7 +8,7 @@ export default function AuthNavigation() {
 
   return (
     <Navigator
-      initialRouteName={'signIn'}
+      initialRouteName={'CountriesScreen'}
       screenOptions={{ headerShown: false }}>
       <Screen name={'SignIn'} component={SignIn} />
       <Screen name={'SignUp'} component={SignUp} />

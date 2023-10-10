@@ -4,14 +4,17 @@ import Toast from 'react-native-toast-message';
 import { NavigationContainer } from '@react-navigation/native';
 
 import RootNavigation from './config/routes/navigation';
+import Provider from './config/queries/Provider';
 export default function App() {
   return (
     <View style={styles.container}>
-      <NavigationContainer>
-        <RootNavigation />
-      </NavigationContainer>
-      <StatusBar style="auto" />
-      <Toast />
+      <Provider>
+        <NavigationContainer>
+          <RootNavigation />
+        </NavigationContainer>
+        <StatusBar style="auto" />
+        <Toast />
+      </Provider>
     </View>
   );
 }

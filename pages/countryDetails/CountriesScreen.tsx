@@ -13,7 +13,6 @@ import { useNavigation } from '@react-navigation/native';
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { FontAwesome } from '@expo/vector-icons';
-import { Feather } from '@expo/vector-icons';
 
 import { TextInput } from '../../ui/forms';
 import { countriesData } from './countriesData';
@@ -35,13 +34,22 @@ export function CountriesScreen() {
   });
   const [searchCountry, setSearchCountry] = useState('');
   const [selectedCountry, setSelectedCountry] = useState('');
-  const countries = countriesData.map(country => country.name);
-  const filterCountry = countries.filter(data =>
+  const [countryCode, setCountryCode] = useState('');
+  const countryNames = countriesData.map(country => country.name);
+  const filterCountry = countryNames.filter(data =>
     data.toLocaleLowerCase().startsWith(searchCountry.toLocaleLowerCase()),
   );
+
+  const getCountryCode = (id: number) => {
+    countriesData.map((item, index) => {
+      if (index === id) {
+        setCountryCode(item.code);
+      }
+    });
+  };
   const navigation = useNavigation();
 
-  const { updateCountryData, countryData } = useCountryStore();
+  const { updateCountryData, updateCountryCode } = useCountryStore();
 
   const handleCountrySelect = (country: string, index: number) => {
     setSearchCountry(country);
@@ -55,19 +63,19 @@ export function CountriesScreen() {
 
   const onSubmit = (data: onSubmitForm) => {
     updateCountryData(data?.searchCountry);
+    updateCountryCode(countryCode);
     setTimeout(() => {
       // @ts-expect-error
       navigation.navigate('homeNavigation', { Screen: 'Home' });
     }, 2000);
   };
-
+  console.log(countryCode);
   return (
     <View style={container}>
       <View style={inputWrapper}>
         <TextInput
           value={selectedCountry}
           textInputField={'searchCountry'}
-          // defaultValue={searchCountry}
           placeholder={'Search for country'}
           onSubmitEditing={data => console.log(data)}
           keyboardType={'default'}
@@ -104,7 +112,10 @@ export function CountriesScreen() {
                   />
                   <TouchableOpacity
                     style={countryStyleWrapper}
-                    onPress={() => handleCountrySelect(item, index)}>
+                    onPress={() => {
+                      handleCountrySelect(item, index);
+                      getCountryCode(index);
+                    }}>
                     <Text style={countryStyle}>{item}</Text>
                   </TouchableOpacity>
                 </View>

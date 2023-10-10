@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
   countryContainer: {
-    width: '70%',
+    width: '60%',
     height: 55,
     flexDirection: 'row',
     alignItems: 'center',

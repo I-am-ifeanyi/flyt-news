@@ -1,15 +1,17 @@
 import { View, Text, StyleSheet, SafeAreaView } from 'react-native';
 
-import { useCountryStore } from '../countryDetails/state/setCountryState';
+import { Header, NewsCategories, NewsComponent } from '../../modules/home';
 
-import { Header, NewsCategories } from '../../modules/home';
+import apiHomeData from './state/apiHomeData';
 
 export function Home() {
+  // const { category } = apiHomeData()
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
       <View style={container}>
         <Header />
         <NewsCategories />
+        <NewsComponent />
       </View>
     </SafeAreaView>
   );

@@ -6,7 +6,7 @@ import {
   TextInput as RxTextInput,
   KeyboardTypeOptions,
   Pressable,
-  TextStyle
+  TextStyle,
 } from 'react-native';
 import { Controller, Control } from 'react-hook-form';
 import { Ionicons } from '@expo/vector-icons';
@@ -28,8 +28,8 @@ type props = {
   isPassword?: boolean;
   isSearchIcon?: boolean;
   value?: string;
-  searchHandleOnclick?: (data: string) => void;
-  style?: TextStyle
+  searchHandleOnclick?: (data: any) => void;
+  style?: TextStyle;
 };
 
 export const TextInput = ({
@@ -49,21 +49,24 @@ export const TextInput = ({
   isSearchIcon,
   value,
   searchHandleOnclick,
-  style
+  style,
 }: props) => {
   const [borderBottomColor, setBorderBottomColor] = useState('gray');
   const [borderColor, setBorderColor] = useState('transparent');
   const [isShowPassword, setIsShowPassword] = useState(true);
+  const [isFocused, setIsFocused] = useState(false);
 
   const togglePasswordVisibility = () => {
     setIsShowPassword(prev => !prev);
   };
   const handleFocus = () => {
     setBorderColor('black');
+    setIsFocused(true);
   };
 
   const handleBlur = () => {
     setBorderColor('gray');
+    setIsFocused(false);
   };
 
   return (
@@ -80,7 +83,7 @@ export const TextInput = ({
                 ...styles(editable).input,
                 borderBottomColor,
                 borderColor,
-                ...style
+                ...style,
               }}>
               <RxTextInput
                 defaultValue={defaultValue}
@@ -112,7 +115,7 @@ export const TextInput = ({
                   )}
                 </Pressable>
               )}
-              {isSearchIcon && (
+              {isSearchIcon && isFocused && (
                 <Pressable onPress={searchHandleOnclick}>
                   <Feather name="search" size={20} color="black" />
                 </Pressable>
