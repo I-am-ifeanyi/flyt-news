@@ -7,7 +7,6 @@ import {
   Pressable,
   TouchableOpacity,
   ScrollView,
-  SafeAreaView,
 } from 'react-native';
 
 import { useNavigation } from '@react-navigation/native';
@@ -22,6 +21,7 @@ import { AntDesign } from '@expo/vector-icons';
 
 import { Logo } from '../../modules/header';
 import { TextInput } from '../../ui/forms';
+import { Box } from '../../ui/layout';
 import { SignUpProps } from '../../config/routes/navigationType';
 import { HomeProps } from '../../config/routes/navigationType';
 
@@ -68,7 +68,7 @@ export const SignIn = ({ navigation }: SignUpProps) => {
     reset();
   };
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
+    <Box>
       <View style={container}>
         <Logo />
         <ScrollView showsVerticalScrollIndicator={false}>
@@ -91,7 +91,10 @@ export const SignIn = ({ navigation }: SignUpProps) => {
                 errorMessage={errors?.userName?.message}
                 rules={{
                   required: 'Username is required',
-                  maxLength: { value: 50, message: 'Maximum of 50 characters' },
+                  maxLength: {
+                    value: 50,
+                    message: 'Maximum of 50 characters',
+                  },
                 }}
               />
               <TextInput
@@ -146,11 +149,11 @@ export const SignIn = ({ navigation }: SignUpProps) => {
                 />
                 <Text style={forgotPasswordStyle}>Forgot Password</Text>
               </View>
-              <Pressable
+              <TouchableOpacity
                 style={signInButtonContainer}
                 onPress={handleSubmit(onSubmit)}>
                 <Text style={signInButton}>Sign In</Text>
-              </Pressable>
+              </TouchableOpacity>
             </KeyboardAvoidingView>
             <View>
               <View style={sideBarContainer}>
@@ -172,7 +175,7 @@ export const SignIn = ({ navigation }: SignUpProps) => {
           </View>
         </ScrollView>
       </View>
-    </SafeAreaView>
+    </Box>
   );
 };
 
@@ -184,7 +187,7 @@ const styles = StyleSheet.create({
   },
   formInput: {
     flex: 1,
-    gap: 50,
+    gap: Platform.OS === "ios" ? 50 : 30,
   },
   loginPrompt: {
     fontSize: 20,
@@ -234,7 +237,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'center',
-    gap: 5
+    gap: 5,
   },
   register: {
     fontWeight: 'bold',

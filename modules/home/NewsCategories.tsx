@@ -1,50 +1,49 @@
 import { View, Text, ScrollView, StyleSheet, Pressable } from 'react-native';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import { categoryState } from '../../pages/homeScreens/state/categoryState';
 
 export function NewsCategories() {
-  const { updateCategory, category } = categoryState();
+  const { updateCategory, toggleTopHeadline } = categoryState();
+  const [activeIndex, setActiveIndex] = useState(0);
   const [categories, setCategories] = useState([
-    { category: 'All News', isActive: true },
-    { category: 'Top Headlines', isActive: false },
-    { category: 'Local News', isActive: false },
-    { category: 'Politics', isActive: false },
-    { category: 'Business and Finance', isActive: false },
-    { category: 'Technology', isActive: false },
-    { category: 'Science and Health', isActive: false },
-    { category: 'Entertainment and Arts', isActive: false },
-    { category: 'Sports', isActive: false },
-    { category: 'Lifestyle', isActive: false },
-    { category: 'Opinion and Editorial', isActive: false },
-    { category: 'Environment', isActive: false },
+    { category: 'Top Headlines' },
+    { category: 'Local News' },
+    { category: 'Politics' },
+    { category: 'Business and Finance' },
+    { category: 'Technology' },
+    { category: 'Science and Health' },
+    { category: 'Entertainment and Arts' },
+    { category: 'Sports' },
+    { category: 'Lifestyle' },
+    { category: 'Opinion and Editorial' },
+    { category: 'Environment' },
     { category: 'Education', isActive: false },
-    { category: 'Weather', isActive: false },
-    { category: 'Technology Trends', isActive: false },
-    { category: 'Human Interest', isActive: false },
-    { category: 'Travel', isActive: false },
-    { category: 'Crime and Justice', isActive: false },
-    { category: 'Breaking News Alerts', isActive: false },
-    { category: 'COVID-19 Updates', isActive: false },
+    { category: 'Weather' },
+    { category: 'Technology Trends' },
+    { category: 'Human Interest' },
+    { category: 'Travel' },
+    { category: 'Crime and Justice' },
+    { category: 'Breaking News Alerts' },
+    { category: 'COVID-19 Updates' },
     {
       category: 'Special Features and Investigative Reporting',
-      isActive: false,
     },
-    { category: 'Tech Reviews and Product Launches', isActive: false },
+    { category: 'Tech Reviews and Product Launches' },
   ]);
 
+  useEffect(() => {
+    toggleTopHeadline(true);
+  }, []);
 
-  const toggleCategory = (id: number) => {
-    setCategories(prev => {
-      return prev.map((item, index) => {
-        if (index === id) {
-          updateCategory(item.category);
-          return { ...item, isActive: true };
-        } else {
-          return { ...item, isActive: false };
-        }
-      });
-    });
+  const toggleCategory = (id: number, category: string) => {
+    if (id !== 0) {
+      toggleTopHeadline(false);
+    } else toggleTopHeadline(true);
+    setActiveIndex(id);
+    updateCategory(category);
+
+  
   };
   return (
     <View>
@@ -53,14 +52,16 @@ export function NewsCategories() {
         horizontal={true}
         showsVerticalScrollIndicator={false}>
         {categories.map((item, index) => {
-          const style = item.isActive ? categoryStyleActive : categoryStyle;
-          const categoryViewStyle = item.isActive ? categoryContainer : null;
+          const style =
+            activeIndex === index ? categoryStyleActive : categoryStyle;
+          const categoryViewStyle =
+            activeIndex === index ? categoryContainer : null;
 
           return (
             <View key={index} style={{ marginRight: 20 }}>
               <Pressable
                 style={categoryViewStyle}
-                onPress={() => toggleCategory(index)}>
+                onPress={() => toggleCategory(index, item.category)}>
                 <Text style={style}>{item.category}</Text>
               </Pressable>
             </View>

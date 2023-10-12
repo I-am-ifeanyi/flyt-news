@@ -8,7 +8,6 @@ import {
   ScrollView,
   TouchableOpacity,
   ActivityIndicator,
-  SafeAreaView,
 } from 'react-native';
 import { useState } from 'react';
 import { userStore } from '../countryDetails/state/setUserData';
@@ -25,6 +24,7 @@ import { Feather } from '@expo/vector-icons';
 
 import { Logo } from '../../modules/header';
 import { TextInput } from '../../ui/forms';
+import { Box } from '../../ui/layout';
 import { PASSWORD_PATTERN, EMAIL_PATTERN, PHONE_PATTERN } from './SignIn';
 
 type IdentityInputs = {
@@ -37,8 +37,13 @@ type IdentityInputs = {
 export const SignUp = ({ navigation }: SignInProps) => {
   const auth = FIREBASE_AUTH;
   const toast = useToast();
-  const { updateUserData, clearUserData, updateUserStatus, userInfo, userStatus } =
-    userStore();
+  const {
+    updateUserData,
+    clearUserData,
+    updateUserStatus,
+    userInfo,
+    userStatus,
+  } = userStore();
   const {
     control,
     watch,
@@ -107,7 +112,7 @@ export const SignUp = ({ navigation }: SignInProps) => {
 
   console.log(userInfo, userStatus);
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
+    <Box>
       <View style={container}>
         <Logo />
         <ScrollView showsVerticalScrollIndicator={false}>
@@ -231,7 +236,7 @@ export const SignUp = ({ navigation }: SignInProps) => {
                   </View>
                 </View>
               </View>
-              <Pressable
+              <TouchableOpacity
                 style={signInButtonContainer}
                 onPress={handleSubmit(onSubmit)}>
                 {isSubmitting ? (
@@ -239,7 +244,7 @@ export const SignUp = ({ navigation }: SignInProps) => {
                 ) : (
                   <Text style={signInButton}>Sign In</Text>
                 )}
-              </Pressable>
+              </TouchableOpacity>
             </KeyboardAvoidingView>
             <View>
               <View style={sideBarContainer}>
@@ -250,9 +255,7 @@ export const SignUp = ({ navigation }: SignInProps) => {
               <View style={signInIconsContainer}>
                 <FontAwesome name="google" size={40} color="black" />
                 <AntDesign name="facebook-square" size={40} color="black" />
-                <Pressable onPress={clearUserData}>
-                  <Text>Clear Form</Text>
-                </Pressable>
+                
               </View>
               <View style={termsAndConditionsContainer}>
                 <Text style={registerOption}>
@@ -270,7 +273,7 @@ export const SignUp = ({ navigation }: SignInProps) => {
           </View>
         </ScrollView>
       </View>
-    </SafeAreaView>
+    </Box>
   );
 };
 

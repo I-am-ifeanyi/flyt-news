@@ -1,4 +1,13 @@
-import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
+import {
+  View,
+  Text,
+  Image,
+  StyleSheet,
+  TouchableOpacity,
+  ImageProps,
+  ImageSourcePropType,
+  ImageURISource,
+} from 'react-native';
 import React, { useState } from 'react';
 
 import { AntDesign } from '@expo/vector-icons';
@@ -7,14 +16,27 @@ import { Fontisto } from '@expo/vector-icons';
 import { Octicons } from '@expo/vector-icons';
 
 const newsImage = require('../../assets/images/newsPoster.jpg');
-export function NewsComponent() {
+
+export type newsProps = {
+  urlToImage?: ImageURISource;
+  title?: string;
+  author?: string;
+  description?: string;
+  publishedAt?: Date;
+};
+export function NewsComponent({
+  urlToImage,
+  title,
+  author,
+  description,
+  publishedAt,
+}: newsProps) {
   const [isNewsLiked, setIsNewsLiked] = useState(false);
   const [actionsCount, setActionsCount] = useState({
     likeCount: 20,
     commentCount: 14,
     shareCount: 10,
   });
-
   const { likeCount, commentCount, shareCount } = actionsCount;
 
   const toggleNewsLikeness = () => {
@@ -25,24 +47,30 @@ export function NewsComponent() {
       setActionsCount(prev => ({ ...prev, likeCount: prev.likeCount - 1 }));
     }
   };
+  // @ts-expect-error
+  const publishedDate = new Date(publishedAt).toLocaleDateString();
+
+  
 
   return (
     <View style={container}>
-      <Image source={newsImage} style={image} />
+      <View style={imageContainer}>
+        <Image
+          //@ts-expect-error
+          source={{ uri: urlToImage }}
+          style={image}
+          accessibilityLabel={description}
+        />
+      </View>
       <View style={contentContainer}>
-        <Text style={headlineStyle}>
-          Mohali Blast: Police find dump of 7,000 mobile phones, oppn knocks
-          security lapses
-        </Text>
-        <View style={{flexDirection: "row", alignItems: "center", gap: 8}}>
-          <Text>By: Lion Li</Text>
+        <Text style={headlineStyle}>{title}</Text>
+        <Text style={{ fontSize: 10 }}>{publishedDate}</Text>
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+          <Text>Author: {author ? author : 'Unavailable'}</Text>
           <Octicons name="dot-fill" size={24} color="red" />
         </View>
         <Text>
-          Saturday's report warned that rising sea levels brought by climate
-          change were having a 'continuous impact' on the development of coastal
-          regions, and urged authorities to improve monitoring and bolster early
-          warning and prevention efforts. <Text>Read More</Text>
+          {description} <Text>Read More</Text>
         </Text>
         <View style={actionsMainContainer}>
           <View style={actionsSubContainer}>
@@ -78,9 +106,14 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: '#E5E4DF',
     borderRadius: 10,
+    marginVertical: 20
+  },
+  imageContainer: {
+    width: '100%',
+    height: 200,
   },
   image: {
-    height: 200,
+    height: '100%',
     width: '100%',
     borderTopLeftRadius: 10,
     borderTopRightRadius: 10,
@@ -113,6 +146,7 @@ const styles = StyleSheet.create({
 });
 const {
   container,
+  imageContainer,
   image,
   actionsMainContainer,
   actionsSubContainer,

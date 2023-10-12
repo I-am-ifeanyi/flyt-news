@@ -15,6 +15,7 @@ import { useForm } from 'react-hook-form';
 import { FontAwesome } from '@expo/vector-icons';
 
 import { TextInput } from '../../ui/forms';
+import { Box } from '../../ui/layout';
 import { countriesData } from './countriesData';
 import { useCountryStore } from './state/setCountryState';
 
@@ -71,7 +72,7 @@ export function CountriesScreen() {
   };
   console.log(countryCode);
   return (
-    <View style={container}>
+    <Box>
       <View style={inputWrapper}>
         <TextInput
           value={selectedCountry}
@@ -133,19 +134,14 @@ export function CountriesScreen() {
           </View>
         </KeyboardAvoidingView>
       </View>
-    </View>
+    </Box>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: 'white',
-    borderWidth: 3,
-  },
   inputWrapper: {
-    height: 120,
-    padding: 20,
+    height: 80,
+    padding: 10,
     borderBottomWidth: 2,
     borderColor: 'gray',
     alignItems: 'center',
@@ -196,7 +192,6 @@ const styles = StyleSheet.create({
 });
 
 const {
-  container,
   inputWrapper,
   iconStyle,
   countriesList,

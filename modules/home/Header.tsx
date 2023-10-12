@@ -1,16 +1,19 @@
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, Keyboard } from 'react-native';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 
 import { useCountryStore } from '../../pages/countryDetails/state/setCountryState';
 import { TextInput } from '../../ui/forms';
+import { categoryState } from '../../pages/homeScreens/state/categoryState';
 
 import { Ionicons } from '@expo/vector-icons';
 import { Entypo } from '@expo/vector-icons';
 
 export function Header() {
-  const { countryData, updateCountryData } = useCountryStore();
-  const [changedCountry, setChangedCountry] = useState('');
+  const { updateCategory, toggleTopHeadline, toggleIsCategory } =
+    categoryState();
+  const { countryData, updateCountryData, countryCode } = useCountryStore();
+  const [searchQuery, setSearchQuery] = useState('');
   const {
     control,
     watch,
@@ -20,7 +23,6 @@ export function Header() {
     setValue,
     formState: { errors, isSubmitting },
   } = useForm();
-  console.log(countryData);
 
   return (
     <View style={container}>
@@ -30,24 +32,31 @@ export function Header() {
         </View>
         <View style={countryContainer}>
           <Entypo name="location-pin" size={24} color="black" />
+          <Text style={{ fontWeight: '600' }}>{countryCode}</Text>
+
           <TextInput
-            textInputField={'searchCountry'}
-            defaultValue={countryData}
-            placeholder={'Search for country'}
+            textInputField={'searchAnything'}
+            // defaultValue={countryData}
+            value={searchQuery}
+            placeholder={'Search for anything'}
             onSubmitEditing={data => console.log(data)}
             keyboardType={'default'}
             selectTextOnFocus={true}
             placeholderTextColor={'#777776'}
             editable={true}
             handleChange={data => {
-              setValue('searchCountry', data);
-              setChangedCountry(data);
+              setValue('searchAnything', data);
+              setSearchQuery(data);
             }}
-            style={{ borderWidth: 0}}
+            style={{ borderWidth: 0 }}
             control={control}
             isPassword={false}
             isSearchIcon={true}
-            searchHandleOnclick={() => updateCountryData(changedCountry)}
+            searchHandleOnclick={() => {
+              toggleTopHeadline(false);
+              toggleIsCategory(false);
+              updateCategory(searchQuery), Keyboard.dismiss();
+            }}
           />
         </View>
       </View>
@@ -72,7 +81,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
   countryContainer: {
-    width: '60%',
+    width: '70%',
     height: 55,
     flexDirection: 'row',
     alignItems: 'center',

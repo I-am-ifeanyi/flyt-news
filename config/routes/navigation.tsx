@@ -10,7 +10,7 @@ export default function RootNavigation() {
   } = userStore();
   const { Navigator, Screen } = createStackNavigator();
   const initialRouteName =
-    email && password ? 'authNavigation' : 'authNavigation';
+    email && password ? 'homeNavigation' : 'authNavigation';
 
   return (
     <Navigator
