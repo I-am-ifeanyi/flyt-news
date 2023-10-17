@@ -13,6 +13,7 @@ const style = StyleSheet.create({
   wrapper: {
     flex: 1,
     paddingTop: Platform.OS === 'android' ? 30 : 0,
+    // paddingHorizontal: 10,
     backgroundColor: '#fff',
   },
 });

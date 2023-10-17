@@ -1,11 +1,11 @@
 import { View, Text, StyleSheet, Platform } from 'react-native';
 import RNPickerSelect from 'react-native-picker-select';
-
 import React, { useState } from 'react';
 
-import { Entypo } from '@expo/vector-icons';
+import { categoryState } from '../../../pages/homeScreens/state/categoryState';
 
 export function SortResults() {
+  const { updateNewsSorting } = categoryState();
   const [selectedValue, setSelectedValue] = useState('Relevancy');
 
   const sortOptions = [
@@ -15,12 +15,20 @@ export function SortResults() {
   ];
 
   return (
-    <View style={{flexDirection: "row", alignItems: "center", gap: 5}}>
-      <Text style={{fontWeight: "600"}}>Sort by:</Text>
+    <View
+      style={{
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 5,
+        paddingVertical: 10,
+      }}>
+      <Text style={{ fontWeight: '600' }}>Sort by:</Text>
 
       <View style={container}>
         <RNPickerSelect
-          onValueChange={value => setSelectedValue(value)}
+          onValueChange={value => {
+            setSelectedValue(value), updateNewsSorting(value);
+          }}
           items={sortOptions}
           value={selectedValue}
           doneText="Sort"
@@ -39,10 +47,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingHorizontal: Platform.OS === 'ios' ? 10 : 0,
     borderRadius: 10,
-  },
-  inputStyle: {
-    backgroundColor: 'red',
-  },
+  }
 });
 
-const { container, inputStyle } = styles;
+const { container } = styles;

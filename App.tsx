@@ -5,6 +5,7 @@ import { NavigationContainer } from '@react-navigation/native';
 
 import RootNavigation from './config/routes/navigation';
 import Provider from './config/queries/Provider';
+import Tabs from './config/routes/Tabs';
 export default function App() {
   return (
     <View style={styles.container}>

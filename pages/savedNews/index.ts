@@ -1,0 +1,1 @@
+export { SavedNews } from './SavedNews';

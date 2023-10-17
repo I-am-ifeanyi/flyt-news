@@ -5,20 +5,26 @@ import {
   FlatList,
   ActivityIndicator,
   TouchableOpacity,
+  Pressable,
   RefreshControl,
 } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import { useEffect, useRef } from 'react';
 
 import { Ionicons } from '@expo/vector-icons';
 
-import { Header, NewsCategories, NewsComponent, SortResults } from '../../modules/home';
+import { Header, NewsCategories, NewsComponent } from '../../modules/home';
+import {
+  SortResults,
+  HeadlinesSelectCategory,
+} from '../../modules/home/sortingResults';
 import { Box } from '../../ui/layout';
 
 import apiHomeData from './state/apiHomeData';
 import { newsProps } from '../../modules/home/NewsComponent';
 import { categoryState } from './state/categoryState';
 
-export function Home() {
+export function Home({navigation} ) {
   const { isTopHeadlines, isCategory, toggleIsCategory, category } =
     categoryState();
   const {
@@ -37,8 +43,6 @@ export function Home() {
 
   const dataToDisplay = isTopHeadlines ? topHeadlinesData : everythingData;
 
-  console.log(isTopHeadlines);
-
   useEffect(() => {
     listRef?.current?.scrollToIndex({
       index: 0,
@@ -55,6 +59,14 @@ export function Home() {
     }
     return everythingRefetch();
   };
+
+  // const navigation = useNavigation();
+
+  // const navigateToNewsDetails = () => {
+  //   navigation.navigate('NewsDetailsNavigation', {
+  //     Screen: 'NewsDetails',
+  //   });
+  // };
 
   return (
     <Box>
@@ -98,7 +110,7 @@ export function Home() {
             <Text>{everythingError.message}</Text>
           </View>
         ) : null}
-        <SortResults />
+        {isTopHeadlines ? <HeadlinesSelectCategory /> : <SortResults />}
         {topHeadlinesIsLoading || isEverythingLoading ? (
           <View
             style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
@@ -132,13 +144,19 @@ export function Home() {
                 item;
               if (!urlToImage) return;
               return (
-                <NewsComponent
-                  urlToImage={urlToImage}
-                  title={title}
-                  author={author}
-                  description={description}
-                  publishedAt={publishedAt}
-                />
+                <Pressable onPress={() => {
+                    navigation.navigate('NewsDetailsNavigation', {
+                      Screen: 'NewsDetails',
+                    });
+                }}>
+                  <NewsComponent
+                    urlToImage={urlToImage}
+                    title={title}
+                    author={author}
+                    description={description}
+                    publishedAt={publishedAt}
+                  />
+                </Pressable>
               );
             }}
           />

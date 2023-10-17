@@ -5,12 +5,14 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 type categoryDataType = {
   category: string;
   isTopHeadlines: boolean;
+  headlinesCategory: string;
   isCategory: boolean;
   sortNewsBy?: string;
   updateCategory: (data: string) => void;
   toggleTopHeadline: (data: boolean) => void;
   toggleIsCategory: (data: boolean) => void;
   updateNewsSorting: (data: string) => void;
+  updateHeadlinesCategory: (data: string) => void;
 };
 
 export const categoryState = create<categoryDataType>()(
@@ -20,6 +22,7 @@ export const categoryState = create<categoryDataType>()(
       isTopHeadlines: true,
       isCategory: true,
       sortNewsBy: 'relevancy',
+      headlinesCategory: 'general',
       updateCategory: data => {
         set({ category: data });
       },
@@ -31,6 +34,9 @@ export const categoryState = create<categoryDataType>()(
       },
       updateNewsSorting: data => {
         set({ sortNewsBy: data });
+      },
+      updateHeadlinesCategory: data => {
+        set({ headlinesCategory: data });
       },
     }),
     {

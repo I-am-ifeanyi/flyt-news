@@ -1,16 +1,15 @@
 import { useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
-
+import { NEWS_API_KEY } from '@env';
 import { categoryState } from './categoryState';
 import { useCountryStore } from '../../countryDetails/state/setCountryState';
 export default function apiHomeData() {
   const { countryCode } = useCountryStore();
-  const { category, sortNewsBy } = categoryState();
+  const { category, sortNewsBy, headlinesCategory } = categoryState();
 
+  const topHeadlineEndPoint = `https://newsapi.org/v2/top-headlines?country=us&pageSize=100&category=${headlinesCategory}&apiKey=${NEWS_API_KEY}`;
 
-  const topHeadlineEndPoint = `https://newsapi.org/v2/top-headlines?country=us&pageSize=100&apiKey=5e0c0f728bc44c64879a26bec0782354`;
-
-  const everythingEndPoint = `https://newsapi.org/v2/everything?q=${category}&sortBy=${sortNewsBy}&apiKey=5e0c0f728bc44c64879a26bec0782354`;
+  const everythingEndPoint = `https://newsapi.org/v2/everything?q=${category}&sortBy=${sortNewsBy}&apiKey=${NEWS_API_KEY}`;
 
   const {
     isLoading: topHeadlinesIsLoading,
@@ -24,7 +23,6 @@ export default function apiHomeData() {
     staleTime: 86400000,
     cacheTime: 86400000,
   });
-
   const {
     isLoading: isEverythingLoading,
     error: everythingError,
@@ -41,7 +39,11 @@ export default function apiHomeData() {
 
   useEffect(() => {
     everythingRefetch();
-  }, [category]);
+  }, [category, sortNewsBy]);
+
+  useEffect(() => {
+    topHeadlinesRefetch();
+  }, [headlinesCategory]);
 
   return {
     topHeadlinesData,
