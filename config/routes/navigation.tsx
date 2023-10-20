@@ -14,7 +14,7 @@ export default function RootNavigation() {
     userInfo: { email, password },
   } = userStore();
   const { Navigator, Screen } = createStackNavigator();
-  const initialRouteName = email && password ? 'tabs' : 'authNavigation';
+  const initialRouteName = 'tabs'
 
   return (
     <Navigator

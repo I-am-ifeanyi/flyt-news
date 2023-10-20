@@ -74,7 +74,7 @@ export function NewsCategories() {
 
 const styles = StyleSheet.create({
   scrollContainer: {
-    marginVertical: 20,
+    marginVertical: 5,
   },
   categoryContainer: {
     borderBottomWidth: 2,

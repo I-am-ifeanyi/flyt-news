@@ -1,8 +1,13 @@
-import { View, Text } from 'react-native';
-import React from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Platform,
+} from 'react-native';
+import React, { ReactNode } from 'react';
 
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { AntDesign } from '@expo/vector-icons';
 import { Ionicons } from '@expo/vector-icons';
 import { Fontisto } from '@expo/vector-icons';
 import { MaterialIcons } from '@expo/vector-icons';
@@ -18,7 +23,98 @@ import { MyNews } from '../../pages/myNews';
 export default function Tabs() {
   const { Navigator, Screen } = createBottomTabNavigator();
 
-  const customTabStyles = {};
+  // type Props = {
+  //   children: ReactNode;
+  //   onPress: () => void;
+  // };
+
+  // const CustomTabStyles = ({ children, onPress }: Props) => {
+  //   return (
+  //     <TouchableOpacity
+  //       onPress={onPress}
+  //       style={{
+  //         top: -30,
+  //         justifyContent: 'center',
+  //         alignItems: 'center',
+  //         ...styles.shadow,
+  //       }}>
+  //       <View style={{ width: 80, height: 80 }}>{children}</View>
+  //     </TouchableOpacity>
+  //   );
+  // };
+
+  const iconDefaultSize = Platform.OS === 'ios' ? 28 : 24;
+  const plusIconSize = Platform.OS === 'ios' ? 70 : 65;
+
+  const tabObjects = [
+    {
+      tabName: 'Home',
+      activeTabIcon: <Entypo name="home" size={iconDefaultSize} color="red" />,
+      inActiveTabIcon: (
+        <Entypo name="home" size={iconDefaultSize} color={'gray'} />
+      ),
+      tabComponent: Home,
+    },
+    {
+      tabName: 'My News',
+      activeTabIcon: (
+        <MaterialCommunityIcons
+          name="content-save-all-outline"
+          size={iconDefaultSize}
+          color={'red'}
+        />
+      ),
+      inActiveTabIcon: (
+        <MaterialCommunityIcons
+          name="content-save-all-outline"
+          size={iconDefaultSize}
+          color={'gray'}
+        />
+      ),
+
+      tabComponent: MyNews,
+    },
+    {
+      tabName: 'Add Post',
+      activeTabIcon: (
+        <Ionicons name="ios-add-circle" size={plusIconSize} color="red" />
+      ),
+      inActiveTabIcon: (
+        <Ionicons name="ios-add-circle" size={plusIconSize} color={'#566573'} />
+      ),
+
+      tabComponent: AddPost,
+    },
+    {
+      tabName: 'Saved',
+      activeTabIcon: (
+        <Fontisto name="favorite" size={iconDefaultSize} color={'red'} />
+      ),
+      inActiveTabIcon: (
+        <Fontisto name="favorite" size={iconDefaultSize} color={'gray'} />
+      ),
+
+      tabComponent: SavedNews,
+    },
+    {
+      tabName: 'Profile',
+      activeTabIcon: (
+        <MaterialIcons
+          name="account-circle"
+          size={iconDefaultSize}
+          color={'red'}
+        />
+      ),
+      inActiveTabIcon: (
+        <MaterialIcons
+          name="account-circle"
+          size={iconDefaultSize}
+          color={'gray'}
+        />
+      ),
+      tabComponent: Profile,
+    },
+  ];
 
   return (
     <Navigator
@@ -27,84 +123,69 @@ export default function Tabs() {
         headerShown: false,
         tabBarStyle: {
           backgroundColor: '#F5F3EA',
-          height: 100,
+          height: Platform.OS === 'ios' ? 100 : 70,
+          position: 'absolute',
+          left: 10,
+          bottom: Platform.OS === 'ios' ? 10 : 0,
+          right: 10,
+          borderTopRightRadius: 30,
+          borderTopLeftRadius: 30,
+          borderTopWidth: Platform.OS === 'ios' ? 4 : 0,
+          ...styles.shadow,
         },
-        tabBarLabelStyle: {
-          fontSize: 14,
-          fontWeight: '600',
-        },
-        tabBarItemStyle: {
-          borderTopColor: '#A3A2A5',
-          borderTopWidth: 4,
-          paddingTop: 5,
-        },
+        tabBarShowLabel: false,
         tabBarActiveTintColor: 'red',
       }}>
-      <Screen
-        name="Home"
-        component={Home}
-        options={{
-          tabBarIcon: ({ focused }) => {
-            if (focused) {
-              return <Entypo name="home" size={24} color="red" />;
-            }
-            return <AntDesign name="home" size={24} color={'black'} />;
-          },
-        }}
-      />
-      <Screen
-        name="My News"
-        component={MyNews}
-        options={{
-          tabBarIcon: ({ focused }) => (
-            <MaterialCommunityIcons
-              name="content-save-all-outline"
-              size={24}
-              color={focused ? 'red' : 'black'}
-            />
-          ),
-        }}
-      />
-
-      <Screen
-        name="Add Post"
-        component={AddPost}
-        options={{
-          tabBarIcon: ({ focused }) => (
-            <Ionicons
-              name="add-circle-outline"
-              size={24}
-              color={focused ? 'red' : 'black'}
-            />
-          ),
-        }}
-      />
-      <Screen
-        name="Saved"
-        component={SavedNews}
-        options={{
-          tabBarIcon: ({ focused }) => (
-            <Fontisto
-              name="favorite"
-              size={24}
-              color={focused ? 'red' : 'black'}
-            />
-          ),
-        }}
-      />
-      <Screen
-        name="Profile"
-        component={Profile}
-        options={{
-          tabBarIcon: ({ focused }) => (
-            <MaterialIcons
-              name="account-circle"
-              size={24}
-              color={focused ? 'red' : 'black'}
-            />
-          ),
-        }}
-      />
+      {tabObjects.map((item, index) => {
+        const isAddPost = item.tabName === 'Add Post';
+        return (
+          <Screen
+            key={index}
+            name={item.tabName}
+            component={item.tabComponent}
+            options={{
+              tabBarIcon: ({ focused }) => (
+                <View
+                  style={{
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    height: isAddPost ? 65 : 50,
+                    gap: 4,
+                    position: isAddPost ? 'absolute' : 'relative',
+                    top: isAddPost ? -36 : 0,
+                  }}>
+                  <View>
+                    {focused ? item.activeTabIcon : item.inActiveTabIcon}
+                  </View>
+                  <Text
+                    style={{
+                      color: focused ? 'red' : 'gray',
+                      fontWeight: focused ? '600' : '400',
+                      fontSize: 12,
+                      position: 'absolute',
+                      top: isAddPost ? 87 : 40,
+                    }}>
+                    {item.tabName}
+                  </Text>
+                </View>
+              ),
+            }}
+          />
+        );
+      })}
     </Navigator>
   );
 }
+
+const styles = StyleSheet.create({
+  shadow: {
+    shadowColor: 'red',
+    shadowOffset: {
+      width: 1,
+      height: 10,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 10,
+    elevation: 10,
+  },
+});
